@@ -2,7 +2,15 @@ module.exports = ({
   values: {
     currentUser,
     id,
-    client: { label, companyName, nip, address, phone, email, discount: clientDiscount },
+    client: {
+      label,
+      companyName,
+      nip,
+      address,
+      phone,
+      email,
+      discount: clientDiscount,
+    },
     dateOfRent,
     dateOfReturn,
     isFinished,
@@ -14,21 +22,38 @@ module.exports = ({
     vat,
     discount,
     td,
-    rentsDurr,
+    rentDuration,
   },
 }) => {
-  const nettoSum = products.map((product) => product.qty * product.netto).reduce((a, b) => a + b) * rentsDurr;
-  const bruttoSum = products.map((product) => product.qty * product.brutto).reduce((a, b) => a + b) * rentsDurr;
-  const vatSum = products.map((product) => (product.qty * product.brutto * parseInt(product.vat, 10)) / 100).reduce((a, b) => a + b) * rentsDurr;
+  const nettoSum =
+    products
+      .map((product) => product.qty * product.netto)
+      .reduce((a, b) => a + b) * rentDuration;
+  const bruttoSum =
+    products
+      .map((product) => product.qty * product.brutto)
+      .reduce((a, b) => a + b) * rentDuration;
+  const vatSum =
+    products
+      .map(
+        (product) =>
+          (product.qty * product.brutto * parseInt(product.vat, 10)) / 100
+      )
+      .reduce((a, b) => a + b) * rentDuration;
 
   const productSum = products.map(
     (product) => `
         <tr>
             <td>${product.vat}</td>
-            <td>${(rentsDurr * product.qty * product.netto).toFixed(2)}</td>
-            <td>${(rentsDurr * (parseInt(product.vat, 10) / 100) * product.brutto * product.qty).toFixed(2)}</td>
-            <td>${(rentsDurr * product.qty * product.brutto).toFixed(2)}</td>
-        </tr>`,
+            <td>${(rentDuration * product.qty * product.netto).toFixed(2)}</td>
+            <td>${(
+              rentDuration *
+              (parseInt(product.vat, 10) / 100) *
+              product.brutto *
+              product.qty
+            ).toFixed(2)}</td>
+            <td>${(rentDuration * product.qty * product.brutto).toFixed(2)}</td>
+        </tr>`
   );
 
   const productList = products
@@ -50,7 +75,7 @@ module.exports = ({
             <td colspan="2">${(product.qty * product.netto).toFixed(2)}</td>
 
             <td colspan="2">${(product.qty * product.brutto).toFixed(2)}</td>
-          </tr>`,
+          </tr>`
     )
     .reduce((a, b) => a + b);
   return `
@@ -243,7 +268,9 @@ module.exports = ({
                                 ${currentUser.companyName}<br>
                                 ${currentUser.name} ${currentUser.surname}<br>
                                 ${currentUser.address.street}<br>
-                                ${currentUser.address.postalCode} ${currentUser.address.city}<br>
+                                ${currentUser.address.postalCode} ${
+    currentUser.address.city
+  }<br>
                                 NIP: ${currentUser.nip}<br>
                                 Tel: ${currentUser.phone}<br>
                                 Email: ${currentUser.email}
@@ -403,7 +430,7 @@ module.exports = ({
                                 Długość najmu:
                             </td>
                             <td>
-                                ${rentsDurr} dni
+                                ${rentDuration} dni
                              </td>
                         </tr>
                         <tr class="total">
