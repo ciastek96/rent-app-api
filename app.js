@@ -1,23 +1,23 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const pdf = require('html-pdf');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const pdf = require("html-pdf");
 
-const pdfTemplate = require('./documents');
+const pdfTemplate = require("./documents");
 
-const usersRouter = require('./routes/users');
-const productsRouter = require('./routes/products');
-const clientsRouter = require('./routes/clients');
-const rentsRouter = require('./routes/rents');
-const accountsRouter = require('./routes/accounts');
+const usersRouter = require("./routes/users");
+const productsRouter = require("./routes/products");
+const clientsRouter = require("./routes/clients");
+const rentsRouter = require("./routes/rents");
+const accountsRouter = require("./routes/accounts");
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: "50mb" }));
 
 const uri = process.env.NODE_DATABASE;
 
@@ -30,26 +30,26 @@ mongoose.connect(uri, {
 
 const db = mongoose.connection;
 
-db.on('error', (err) => {
-  console.log('Connection error.', err);
+db.on("error", (err) => {
+  console.log("Connection error.", err);
 });
 
-db.once('open', () => {
-  console.log('Connected to database.');
+db.once("open", () => {
+  console.log("Connected to database.");
 });
 
-app.use('/users', usersRouter);
-app.use('/products', productsRouter);
-app.use('/clients', clientsRouter);
-app.use('/rents', rentsRouter);
-app.use('/accounts', accountsRouter);
+app.use("/users", usersRouter);
+app.use("/products", productsRouter);
+app.use("/clients", clientsRouter);
+app.use("/rents", rentsRouter);
+app.use("/accounts", accountsRouter);
 
-app.get('/', (req, res) => {
-  res.send('Hello from API!');
+app.get("/", (req, res) => {
+  res.send("Hello from API!");
 });
 
-app.post('/create-pdf', (req, res) => {
-  pdf.create(pdfTemplate(req.body), {}).toFile('result.pdf', (err) => {
+app.post("/create-pdf", (req, res) => {
+  pdf.create(pdfTemplate(req.body), {}).toFile("result.pdf", (err) => {
     if (err) {
       res.send(Promise.reject());
     }
@@ -58,11 +58,11 @@ app.post('/create-pdf', (req, res) => {
   });
 });
 
-app.get('/fetch-pdf', (req, res) => {
+app.get("/fetch-pdf", (req, res) => {
   res.sendFile(`${__dirname}/result.pdf`);
 });
 
-app.listen(process.env.PORT || 5000, () => {
+app.listen(process.env.PORT || 5000, "0.0.0.0", () => {
   console.log(`Server is running on port: ${port}`);
 });
 
